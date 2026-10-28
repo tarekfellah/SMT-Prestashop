@@ -37,8 +37,9 @@ class Clictopay extends PaymentModule
     public $address;
     public $extra_mail_vars;
 
-
-    ////////////////////////////////////////////////////////////////////
+    /**
+     * Sets the module metadata and warns when no currency is enabled for it.
+     */
     public function __construct()
     {
         $this->name = 'clictopay';
@@ -60,7 +61,11 @@ class Clictopay extends PaymentModule
         }
     }
 
-    ////////////////////////////////////////////////////////////////////
+    /**
+     * Installs the module: hook, transaction table, "accepted" order state and default configuration.
+     *
+     * @return bool
+     */
     public function install()
     {
         if (!parent::install()) {
@@ -91,7 +96,13 @@ class Clictopay extends PaymentModule
         return true;
     }
 
-    ////////////////////////////////////////////////////////////////////
+    /**
+     * Uninstalls the module and deletes its configuration values.
+     *
+     * The transaction table and order states are kept so existing orders stay consistent.
+     *
+     * @return bool
+     */
     public function uninstall()
     {
         if (!parent::uninstall()) {
@@ -105,9 +116,10 @@ class Clictopay extends PaymentModule
         return true;
     }
 
-    ////////////////////////////////////////////////////////////////////
     /**
-     * One row per register.do call: links a cart to the ClicToPay orderId.
+     * Creates the transaction table. One row per register.do call: links a cart to the ClicToPay orderId.
+     *
+     * @return bool
      */
     public function installDb()
     {
@@ -123,7 +135,11 @@ class Clictopay extends PaymentModule
             ) ENGINE=' . _MYSQL_ENGINE_ . ' DEFAULT CHARSET=utf8mb4');
     }
 
-    ////////////////////////////////////////////////////////////////////
+    /**
+     * Module configuration page: saves the settings, runs the integration tests and renders both panels.
+     *
+     * @return string HTML of the configuration page
+     */
     public function getContent()
     {
         $output = null;
@@ -160,7 +176,11 @@ class Clictopay extends PaymentModule
         return $output . $this->displayForm() . $this->displayDiagnostics($calls);
     }
 
-    ////////////////////////////////////////////////////////////////////
+    /**
+     * Builds the configuration form (API credentials, payment page language, sandbox, debug log).
+     *
+     * @return string HTML of the form
+     */
     public function displayForm()
     {
         // Get default language
@@ -271,10 +291,13 @@ class Clictopay extends PaymentModule
         return $helper->generateForm($fields_form);
     }
 
-    ////////////////////////////////////////////////////////////////////
     /**
      * Integration test screen: ClicToPay requires the validation grid results
      * to come from the merchant site itself, not from Postman.
+     *
+     * @param array $calls Results of runDiagnostic() to display
+     *
+     * @return string HTML of the test panel
      */
     public function displayDiagnostics($calls)
     {
@@ -287,10 +310,13 @@ class Clictopay extends PaymentModule
         return $this->display(__FILE__, 'views/templates/admin/diagnostics.tpl');
     }
 
-    ////////////////////////////////////////////////////////////////////
     /**
-     * Runs the requested test case and returns a list of
-     * ['label' => string, 'request' => array, 'raw' => string].
+     * Runs the requested test case of the ClicToPay validation grid.
+     *
+     * @param string $test One of register_valid, register_missing_amount, register_duplicate, status_unknown_order, status
+     * @param string $ctp_order_id ClicToPay orderId, used by the "status" test only
+     *
+     * @return array List of ['label' => string, 'request' => array, 'raw' => string]
      */
     public function runDiagnostic($test, $ctp_order_id = '')
     {
@@ -347,7 +373,11 @@ class Clictopay extends PaymentModule
         return $calls;
     }
 
-    ////////////////////////////////////////////////////////////////////
+    /**
+     * Registers the hooks used by the module.
+     *
+     * @return bool
+     */
     private function registrationHook()
     {
         if (!$this->registerHook('paymentOptions')
@@ -357,7 +387,21 @@ class Clictopay extends PaymentModule
         return true;
     }
 
-    ////////////////////////////////////////////////////////////////////
+    /**
+     * Creates a module order state, copies its icon and stores its id in SMT_OS_<TYPE>.
+     *
+     * @param string $nameFR Name for French languages
+     * @param string $nameEN Name for every other language
+     * @param string $type State suffix, also used for the icon views/img/clictopay_<type>.png
+     * @param string $color Color shown in the back office
+     * @param bool $send_email Send an email to the customer when the order gets this state
+     * @param bool $hidden Hide the state from the customer
+     * @param bool $delivery Consider the order as shipped
+     * @param bool $logable Consider the order as validated (also used for "paid")
+     * @param bool $invoice Allow the invoice to be generated
+     *
+     * @return bool
+     */
     private function installOrderState($nameFR, $nameEN, $type, $color = 'LimeGreen', $send_email = false, $hidden = false, $delivery = false, $logable = false, $invoice = false)
     {
         $order_state = new OrderState();
@@ -388,7 +432,13 @@ class Clictopay extends PaymentModule
         return true;
     }
 
-    ////////////////////////////////////////////////////////////////////
+    /**
+     * Adds ClicToPay to the payment options of the checkout.
+     *
+     * @param array $params Hook parameters, contains the current 'cart'
+     *
+     * @return PaymentOption[] Empty when the module is inactive, not configured or the currency is not supported
+     */
     public function hookPaymentOptions($params)
     {
         if (!$this->active
@@ -413,7 +463,13 @@ class Clictopay extends PaymentModule
         return [$payment_options];
     }
 
-    ////////////////////////////////////////////////////////////////////
+    /**
+     * Checks the cart currency is both supported by ClicToPay and enabled for this module.
+     *
+     * @param Cart $cart
+     *
+     * @return bool
+     */
     public function checkCurrency($cart)
     {
         $currency_order = new Currency($cart->id_currency);
@@ -432,13 +488,24 @@ class Clictopay extends PaymentModule
         return false;
     }
 
-    ////////////////////////////////////////////////////////////////////
+    /**
+     * Base URL of the ClicToPay REST API for the current mode (sandbox or production).
+     *
+     * @return string
+     */
     public function getUrl()
     {
         return Configuration::get('SMT_SANDBOX') == 1 ? self::TEST_URL : self::LIVE_URL;
     }
 
-    ////////////////////////////////////////////////////////////////////
+    /**
+     * Writes a message to the PrestaShop logs when the debug log is enabled.
+     *
+     * @param string $message
+     * @param int|null $id_cart Cart the message relates to
+     *
+     * @return void
+     */
     public function log($message, $id_cart = null)
     {
         if (!Configuration::get('CLICTOPAY_DEBUG')) {
@@ -447,12 +514,17 @@ class Clictopay extends PaymentModule
         PrestaShopLogger::addLog('[ClicToPay] ' . $message, 1, null, $id_cart ? 'Cart' : null, $id_cart ? (int)$id_cart : null, true);
     }
 
-    ////////////////////////////////////////////////////////////////////
     /**
      * POST to a ClicToPay endpoint, credentials are added here.
      *
-     * Returns ['raw' => string, 'data' => array|null, 'error' => string|null].
      * The raw body is what has to be pasted into the integration validation grid.
+     *
+     * @param string $endpoint e.g. register.do, getOrderStatusExtended.do
+     * @param array $params Request parameters, without userName/password
+     * @param string $label Name used in the logs, defaults to the endpoint
+     * @param int|null $id_cart Cart the call relates to, for the logs
+     *
+     * @return array ['raw' => string, 'data' => array|null, 'error' => string|null]
      */
     public function apiRequest($endpoint, $params, $label = '', $id_cart = null)
     {
@@ -495,9 +567,12 @@ class Clictopay extends PaymentModule
         return ['raw' => $raw, 'data' => $data, 'error' => null];
     }
 
-    ////////////////////////////////////////////////////////////////////
     /**
-     * Registers the cart on ClicToPay. Returns ['formUrl' => string] or ['error' => string].
+     * Registers the cart on ClicToPay (register.do) and stores the returned orderId.
+     *
+     * @param Cart $cart
+     *
+     * @return array ['formUrl' => string] on success, ['error' => string] otherwise
      */
     public function registerCart(Cart $cart)
     {
@@ -552,9 +627,12 @@ class Clictopay extends PaymentModule
         return ['formUrl' => $body['formUrl']];
     }
 
-    ////////////////////////////////////////////////////////////////////
     /**
      * ClicToPay orderId of the latest register.do call for this cart.
+     *
+     * @param int $id_cart
+     *
+     * @return string Empty string when the cart was never registered
      */
     public function getLastCtpOrderId($id_cart)
     {
@@ -564,9 +642,13 @@ class Clictopay extends PaymentModule
             ORDER BY `id_clictopay_transaction` DESC');
     }
 
-    ////////////////////////////////////////////////////////////////////
     /**
-     * Query the real status of an order. Never trust the redirection alone.
+     * Query the real status of an order (getOrderStatusExtended.do). Never trust the redirection alone.
+     *
+     * @param string $ctp_order_id ClicToPay orderId returned by register.do
+     * @param int|null $id_cart Cart the call relates to, for the logs
+     *
+     * @return array Same format as apiRequest()
      */
     public function getOrderStatusExtended($ctp_order_id, $id_cart = null)
     {

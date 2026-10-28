@@ -19,6 +19,12 @@ class ClictopayReturnModuleFrontController extends ModuleFrontController
 {
     public $ssl = true;
 
+    /**
+     * Checks the cart key, asks ClicToPay for the real status and creates the order
+     * only when orderStatus = 2.
+     *
+     * @return void
+     */
     public function postProcess()
     {
         $cart = new Cart((int)Tools::getValue('id_cart'));
@@ -90,6 +96,14 @@ class ClictopayReturnModuleFrontController extends ModuleFrontController
         $this->redirectToConfirmation($cart, (int)$this->module->currentOrder);
     }
 
+    /**
+     * Redirects the customer to the order confirmation page. Does not return.
+     *
+     * @param Cart $cart
+     * @param int $id_order
+     *
+     * @return void
+     */
     private function redirectToConfirmation(Cart $cart, $id_order)
     {
         $customer = new Customer((int)$cart->id_customer);
@@ -103,6 +117,10 @@ class ClictopayReturnModuleFrontController extends ModuleFrontController
 
     /**
      * No order is created: the cart stays available so the customer can retry. Does not return.
+     *
+     * @param string $message Reason shown to the customer
+     *
+     * @return void
      */
     private function fail($message)
     {

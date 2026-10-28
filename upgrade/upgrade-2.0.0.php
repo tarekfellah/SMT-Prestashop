@@ -16,6 +16,10 @@ if (!defined('_PS_VERSION_')) {
 
 /**
  * 2.0.0: legacy SMT affiliate protocol replaced by the ClicToPay REST API (register.do / getOrderStatusExtended.do).
+ *
+ * @param Clictopay $module
+ *
+ * @return bool
  */
 function upgrade_module_2_0_0($module)
 {

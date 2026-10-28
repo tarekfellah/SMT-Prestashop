@@ -18,6 +18,13 @@ class ClictopayRedirectModuleFrontController extends ModuleFrontController
 {
     public $ssl = true;
 
+    /**
+     * Checks the cart, registers it on ClicToPay and redirects the customer to the payment page.
+     *
+     * Sends the customer back to the checkout with an error when register.do fails.
+     *
+     * @return void
+     */
     public function postProcess()
     {
         $cart = $this->context->cart;
