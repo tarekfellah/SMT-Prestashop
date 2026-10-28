@@ -1,4 +1,4 @@
-<<<<<<< HEAD
+
 # ClicToPay Monétique Tunisie (SPS-SMT) – Prestashop 1.7.7 à 9.x
 
 ![logo ClicToPay](logo.png) 
@@ -12,7 +12,7 @@ ClicToPay (SMT-SPS) est un module pour **Prestashop 1.7.7 à 9.x** de paiement e
 > - Accepte les paiements multidevises \*\*selon votre accord avec la banque
 > - Accepte les paiements de différents cartes (locale et internationale) \*\*selon votre accord avec la banque
 > - Enregistré sous la licence BSD.
-> - Développé par  **ExtrumWeb International**
+> - Développé par  **Oxygène Technologies**
 
 ## Installation
 
@@ -45,7 +45,7 @@ La page de configuration contient un écran « **ClicToPay integration tests** �
 
 ## Licence
 
-Ce Module est sous la licence BSD. Développé par  [ExtrumWeb International](https://www.extrumweb.com/)
+Ce Module est sous la licence BSD. Développé par  Oxygène Technologies https://oxygene-tech.com
 
 Voir [LICENCE](https://github.com/agencep/ClicToPay-SMT/blob/master/LICENSE.txt)
 =======
