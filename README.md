@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # ClicToPay Monétique Tunisie (SPS-SMT) – Prestashop 1.7.7 à 9.x
 
 ![logo ClicToPay](logo.png) 
@@ -47,3 +48,7 @@ La page de configuration contient un écran « **ClicToPay integration tests** �
 Ce Module est sous la licence BSD. Développé par  [ExtrumWeb International](https://www.extrumweb.com/)
 
 Voir [LICENCE](https://github.com/agencep/ClicToPay-SMT/blob/master/LICENSE.txt)
+=======
+# SMT-Prestashop
+Module Click To Pay Prestashop 1.7, 8, 9
+>>>>>>> 958fa688611728a286621093077cdef7a07df4c9
