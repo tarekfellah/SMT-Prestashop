@@ -1,5 +1,6 @@
 The BSD License (BSD)
 
+Copyright (c) 2026 Oxygène Technologies <tarek.fellah@oxygene-tech.com>
 Copyright (c) 2017 ExtrumWeb International
 
 All rights reserved.

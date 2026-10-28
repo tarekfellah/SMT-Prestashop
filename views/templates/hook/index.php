@@ -1,7 +1,10 @@
 <?php
 
 /*
- * (c) 2017 ExtrumWeb International <info@extrumweb.com>
+ * (c) 2026 Oxygène Technologies <tarek.fellah@oxygene-tech.com>
+ *
+ * Based on the ClicToPay module (c) 2017 ExtrumWeb International <info@extrumweb.com>,
+ * distributed under the BSD license.
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.

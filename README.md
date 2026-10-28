@@ -1,8 +1,8 @@
-# ClicToPay Monétique Tunisie (SPS-SMT) – Prestashop 1.7.x
+# ClicToPay Monétique Tunisie (SPS-SMT) – Prestashop 1.7.7 à 9.x
 
 ![logo ClicToPay](logo.png) 
 
-ClicToPay (SMT-SPS) est un module pour **Prestashop 1.7.x****  **de paiement en ligne destiné pour les commerçants en Tunisie.
+ClicToPay (SMT-SPS) est un module pour **Prestashop 1.7.7 à 9.x** de paiement en ligne destiné pour les commerçants en Tunisie.
 
 ## Caractéristiques et fonctionnalités du module ClicToPay (SMT-SPS) :
 
@@ -24,21 +24,23 @@ ClicToPay (SMT-SPS) est un module pour **Prestashop 1.7.x****  **de paiement en 
 
 ## Configuration
 
-> 1. Cliquez sur le bouton «  **Configurer**  » du module «  **ClicToPay SMT ** »
-> 2. Remplissez le champ «  **Terminal Number ** »
-> 3. Activer ou désactiver le mode «  **Sandbox ** ».
-> 4. Enregistrer la configuration.
+> 1. Cliquez sur le bouton « **Configurer** » du module « **ClicToPay SMT** »
+> 2. Remplissez « **Api-User Login** » et « **Api-User Password** » fournis par ClicToPay
+> 3. Choisissez la langue de la page de paiement
+> 4. Activez ou désactivez le mode « **Sandbox** » (test.clictopay.com / ipay.clictopay.com)
+> 5. Enregistrez la configuration.
 
-## Liens de Configuration
+Aucune URL n'est à déclarer chez ClicToPay : `returnUrl` et `failUrl` sont envoyées à chaque appel `register.do`.
 
-Rajouter « **http(s)://www.domain.com**» avant les liens.
+## Fonctionnement d'un paiement
 
-> - Contrôle et Notification
->  - /index.php?fc=module&amp;module=clictopay&amp;controller=smtcontrol
-> - Success
->  - /index.php?fc=module&amp;module=clictopay&amp;controller=success
-> - Echec
->  - /index.php?fc=module&amp;module=clictopay&amp;controller=echec
+> 1. Le client choisit ClicToPay : le contrôleur `redirect` appelle `register.do` et le redirige vers `formUrl`.
+> 2. Après la saisie de la carte, ClicToPay renvoie le client vers le contrôleur `return` (même URL en succès et en échec, protégée par la clé du panier).
+> 3. Le contrôleur `return` appelle `getOrderStatusExtended.do`. La commande n'est créée que si `orderStatus = 2`. Sinon le client revient au tunnel de commande avec le motif du refus, et son panier reste disponible.
+
+## Tests d'intégration
+
+La page de configuration contient un écran « **ClicToPay integration tests** » qui exécute depuis la boutique les cas de la grille de validation (enregistrement valide, montant manquant, numéro de commande en double, orderId inconnu, consultation d'un orderId) et affiche le JSON brut. Avec l'option « **Debug log** », chaque appel est aussi enregistré dans *Paramètres avancés > Logs* (mot de passe masqué).
 
 ## Licence
 
