@@ -47,7 +47,7 @@ La page de configuration contient un écran « **ClicToPay integration tests** �
 
 Ce Module est sous la licence BSD. Développé par  Oxygène Technologies https://oxygene-tech.com
 
-Voir [LICENCE](https://github.com/agencep/ClicToPay-SMT/blob/master/LICENSE.txt)
+Voir [LICENCE](https://github.com/tarekfellah/SMT-Prestashop/blob/master/LICENSE.txt)
 =======
 # SMT-Prestashop
 Module Click To Pay Prestashop 1.7, 8, 9
